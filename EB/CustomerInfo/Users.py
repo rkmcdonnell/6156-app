@@ -62,7 +62,26 @@ class UsersService(BaseService):
 
         return result
 
+    @classmethod
+    def update_user(cls, user_info,email):
 
 
+
+        for f in UsersService.required_create_fields:
+            v = user_info.get(f, None)
+            if v is None:
+                raise ServiceException(ServiceException.missing_field,
+                                       "Missing field = " + f)
+
+
+        result = UsersRDB.update_user(email, user_info=user_info)
+
+        return result
+
+    @classmethod
+    def delete_user(cls, email):
+
+        result = UsersRDB.delete_user(email)
+        return result
 
 

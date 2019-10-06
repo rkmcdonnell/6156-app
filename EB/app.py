@@ -188,6 +188,51 @@ def user_email(email):
                 rsp_data = None
                 rsp_status = 404
                 rsp_txt = "NOT FOUND"
+
+        elif inputs["method"] == "DELETE":
+
+            rsp = user_service.get_by_email(email)
+
+            if rsp is not None:
+                if rsp["status"]=="DELETED":
+                    rsp_data = None
+                    rsp_status = 404
+                    rsp_txt = "User Account " + rsp["email"] + "has already been deleted"
+                else:
+                    rsp = user_service.delete_user(email)
+                    rsp_data = rsp
+                    rsp_status = 200
+                    rsp_txt = "OK"
+            else:
+                rsp_data = None
+                rsp_status = 404
+                rsp_txt = "USER NOT FOUND"
+
+        elif inputs["method"] == "PUT":
+            body = inputs.get("body", None)
+            rsp = user_service.get_by_email(email)
+
+            if rsp is not None:
+                if rsp["status"]!="ACTIVE":
+                    rsp_data = None
+                    rsp_status = 404
+                    rsp_txt = "User Account " + rsp["email"] + "is not active"
+                elif body is None:
+                    rsp_data = None
+                    rsp_status = 404
+                    rsp_txt = "Body Not Received"
+                else:
+                    body["id"] = rsp["id"]
+                    rsp = user_service.update_user(body,email)
+                    rsp_data = rsp
+                    rsp_status = 200
+                    rsp_txt = "OK"
+            else:
+                rsp_data = None
+                rsp_status = 404
+                rsp_txt = "USER NOT FOUND"
+
+
         else:
             rsp_data = None
             rsp_status = 501
