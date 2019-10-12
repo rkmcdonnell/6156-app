@@ -160,6 +160,53 @@ def demo(parameter):
     return rsp
 
 
+@application.route("/api/registration", methods=["POST"])
+def register_user():
+    global _user_service
+
+    inputs = log_and_extract_input(demo)
+    rsp_data = None
+    rsp_status = None
+    rsp_txt = None
+
+    try:
+        user_service = _get_user_service()
+
+        logger.error("/email: _user_service = " + str(user_service))
+        if inputs["method"] == "POST":
+            body = inputs.get("body", None)
+            rsp = user_service.get_by_email(body.get("email",None))
+
+            if rsp is not None:
+                rsp_data = None
+                rsp_status = 404
+                rsp_txt = "EMAIL ALREADY IN USE"
+            else:
+                rsp = user_service.ceate_user(body)
+                rsp_data = rsp
+                rsp_status = 200
+                rsp_txt = "OK"
+        else:
+            rsp_data = None
+            rsp_status = 501
+            rsp_txt = "NOT IMPLEMENTED"
+
+        if rsp_data is not None:
+            full_rsp = Response(json.dumps(rsp_data), status=rsp_status, content_type="application/json")
+        else:
+            full_rsp = Response(rsp_txt, status=rsp_status, content_type="text/plain")
+
+    except Exception as e:
+        log_msg = "/email: Exception = " + str(e)
+        logger.error(log_msg)
+        rsp_status = 500
+        rsp_txt = "INTERNAL SERVER ERROR. Please take COMSE6156 -- Cloud Native Applications."
+        full_rsp = Response(rsp_txt, status=rsp_status, content_type="text/plain")
+
+    log_response("/email", rsp_status, rsp_data, rsp_txt)
+
+    return full_rsp
+
 @application.route("/api/user/<email>", methods=["GET", "PUT", "DELETE"])
 def user_email(email):
 
