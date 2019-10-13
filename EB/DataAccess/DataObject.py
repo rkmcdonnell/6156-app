@@ -44,7 +44,7 @@ class UsersRDB(BaseDataObject):
     @classmethod
     def delete_user(cls, email):
 
-        sql = "delete from e6156.users where email=%s"
+        sql = "UPDATE e6156.users SET status = 'DELETED' WHERE email=%s"
         res, data = data_adaptor.run_q(sql=sql, args=(email), fetch=True)
         if data is not None and len(data) > 0:
             result =  data[0]

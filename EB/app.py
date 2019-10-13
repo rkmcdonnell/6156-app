@@ -207,6 +207,7 @@ def register_user():
 
     return full_rsp
 
+
 @application.route("/api/user/<email>", methods=["GET", "PUT", "DELETE"])
 def user_email(email):
 
@@ -260,10 +261,10 @@ def user_email(email):
             rsp = user_service.get_by_email(email)
 
             if rsp is not None:
-                if rsp["status"]!="ACTIVE":
+                if rsp["status"]=="DELETED":
                     rsp_data = None
                     rsp_status = 404
-                    rsp_txt = "User Account " + rsp["email"] + "is not active"
+                    rsp_txt = "User Account " + rsp["email"] + "is deleted"
                 elif body is None:
                     rsp_data = None
                     rsp_status = 404
