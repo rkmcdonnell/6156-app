@@ -2,8 +2,8 @@ import DataAccess.DataAdaptor as data_adaptor
 from abc import ABC, abstractmethod
 import pymysql.err
 
-class DataException(Exception):
 
+class DataException(Exception):
     unknown_error   =   1001
     duplicate_key   =   1002
 
@@ -11,8 +11,8 @@ class DataException(Exception):
         self.code = code
         self.msg = msg
 
-class BaseDataObject(ABC):
 
+class BaseDataObject(ABC):
     def __init__(self):
         pass
 
@@ -30,12 +30,22 @@ class UsersRDB(BaseDataObject):
         self._ctx = ctx
 
     @classmethod
-    def get_by_email(cls, email):
+    def get_first(cls):
+        sql = "select * from e6156.users limit 1"
+        res, data = data_adaptor.run_q(sql=sql, fetch=True)
+        if data is not None and len(data) > 0:
+            result = data[0]
+        else:
+            result = None
 
+        return result
+
+    @classmethod
+    def get_by_email(cls, email):
         sql = "select * from e6156.users where email=%s"
         res, data = data_adaptor.run_q(sql=sql, args=(email), fetch=True)
         if data is not None and len(data) > 0:
-            result =  data[0]
+            result = data[0]
         else:
             result = None
 
@@ -43,11 +53,10 @@ class UsersRDB(BaseDataObject):
 
     @classmethod
     def delete_user(cls, email):
-
         sql = "UPDATE e6156.users SET status = 'DELETED' WHERE email=%s"
         res, data = data_adaptor.run_q(sql=sql, args=(email), fetch=True)
         if data is not None and len(data) > 0:
-            result =  data[0]
+            result = data[0]
         else:
             result = None
 

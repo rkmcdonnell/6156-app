@@ -36,6 +36,9 @@ class UsersService(BaseService):
 
         self._ctx = ctx
 
+    @classmethod
+    def get_first(cls):
+        return UsersRDB.get_first()
 
     @classmethod
     def get_by_email(cls, email):
@@ -63,7 +66,7 @@ class UsersService(BaseService):
         return result
 
     @classmethod
-    def update_user(cls, user_info,email):
+    def update_user(cls, user_info, email):
         for f in UsersService.required_create_fields:
             v = user_info.get(f, None)
             if v is None:
