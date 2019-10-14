@@ -266,24 +266,16 @@ def user():
 
 @application.route("/api/user/<email>", methods=["GET", "PUT", "DELETE"])
 def user_email(email):
-
     global _user_service
-
     inputs = log_and_extract_input(demo, { "parameters": email })
     rsp_data = None
-    rsp_status = None
-    rsp_txt = None
 
     try:
-
         user_service = _get_user_service()
-
-        logger.error("/email: _user_service = " + str(user_service))
+        logger.error("/api/user/email: _user_service = " + str(user_service))
 
         if inputs["method"] == "GET":
-
             rsp = user_service.get_by_email(email)
-
             if rsp is not None:
                 rsp_data = rsp
                 rsp_status = 200
@@ -294,9 +286,7 @@ def user_email(email):
                 rsp_txt = "NOT FOUND"
 
         elif inputs["method"] == "DELETE":
-
             rsp = user_service.get_by_email(email)
-
             if rsp is not None:
                 if rsp["status"]=="DELETED":
                     rsp_data = None
